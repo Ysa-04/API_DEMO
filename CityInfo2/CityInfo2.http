@@ -1,6 +1,42 @@
-@CityInfo2_HostAddress = http://localhost:5058
+@baseUrl = http://localhost:5058
+@cityId = 1
+@pointOfInterestId = 1
 
-GET {{CityInfo2_HostAddress}}/api/cities
+GET {{baseUrl}}/api/cities
+Accept: application/json
+
+### Get all cities
+GET {{baseUrl}}/api/cities
+Accept: application/json
+
+### Get all cities (XML format)
+GET {{baseUrl}}/api/cities
+Accept: application/xml
+
+### Get specific city
+GET {{baseUrl}}/api/cities/{{cityId}}
+Accept: application/json
+
+### Invalid
+GET {{baseUrl}}/api/people
+Accept: application/json
+
+### Get city that doesn't exist
+GET {{baseUrl}}/api/cities/999
 Accept: application/json
 
 ###
+### Points of Interest Endpoints
+###
+
+### Get all points of interest for a city
+GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest
+Accept: application/json
+
+### Get specific point of interest
+GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/{{pointOfInterestId}}
+Accept: application/json
+
+### Get point of interest that doesn't exist
+GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/999
+Accept: application/json
