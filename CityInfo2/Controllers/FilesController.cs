@@ -11,7 +11,7 @@ namespace CityInfo2.Controllers
     {
 
         [HttpGet("{fileName}")]
-        public ActionResult GetFile(string fileName)
+        public async Task<ActionResult> GetFile(string fileName)
         {
             if(!System.IO.File.Exists(fileName))
             {
@@ -23,7 +23,7 @@ namespace CityInfo2.Controllers
                 contentType = "application/octet-stream";
             }
 
-            var bytes = System.IO.File.ReadAllBytes(fileName);
+            var bytes = await System.IO.File.ReadAllBytesAsync(fileName); 
             return File(bytes, contentType, Path.GetFileName(fileName));
         }
     }
