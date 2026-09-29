@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo2.Controllers
 {
-    [Route("api/cities/{cityId}")]
+    [Route("api/cities/{cityId}/pointsofinterest")]
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
@@ -45,7 +45,7 @@ namespace CityInfo2.Controllers
         }
 
         [HttpPost]
-        public ActionResult<PointOfInterestForCreationDto> CreatePointOfInterest(int cityId, 
+        public ActionResult<PointOfInterestDto> CreatePointOfInterest(int cityId, 
             PointOfInterestForCreationDto pointOfInterest)
         {
             var city = CitiesDataStore.Current.Cities
@@ -77,7 +77,8 @@ namespace CityInfo2.Controllers
             //201 created
             return CreatedAtAction(nameof(GetPointOfInterest), //action name
                 new 
-                { cityId = cityId, 
+                { 
+                  cityId, 
                   pointOfInterestId = finalPointOfInterest.Id 
                 }, //route values
                 finalPointOfInterest //response body
