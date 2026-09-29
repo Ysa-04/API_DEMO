@@ -45,9 +45,21 @@ namespace CityInfo2.Controllers
         }
 
         [HttpPost]
-        public ActionResult<PointOfInterestForCreationDto> CreatePointOfInterest(int cityId, PointOfInterestForCreationDto pointOfInterest)
+        public ActionResult<PointOfInterestForCreationDto> CreatePointOfInterest(int cityId, 
+            PointOfInterestForCreationDto pointOfInterest)
         {
+            var city = CitiesDataStore.Current.Cities
+                .FirstOrDefault(c => c.Id == cityId);
 
+            if(city is null)
+            {
+                return NotFound(); //404
+            }
+
+            //id creeeren want geen database dus geen auto increment (womp womp)
+            var maxPointOfInterestId = CitiesDataStore.Current.Cities
+                .SelectMany(c => c.PointsOfInterest)
+                .Max(p => p.Id);
         }
     }
 }

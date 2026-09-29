@@ -6,7 +6,7 @@
         public string Name { get; set; } = string.Empty; 
         public string? Description { get; set; }
         public int NumberOfInterest => PointsOfInterest.Count;
-        public ICollection<PointOfInterestDto> PointsOfInterest { get; set; } = new List<PointOfInterestDto>();
+        public ICollection<PointOfInterestDto> PointsOfInterest { get; set; } = [];
 
 
         // als ge een naam niet invult gaat da leeg zijn, een description kan null zijn. 
