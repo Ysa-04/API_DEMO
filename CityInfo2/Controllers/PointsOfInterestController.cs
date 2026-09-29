@@ -56,10 +56,32 @@ namespace CityInfo2.Controllers
                 return NotFound(); //404
             }
 
-            //id creeeren want geen database dus geen auto increment (womp womp)
+            //id creeeren want geen database dus geen auto increment (womp womp) !niet safe dus!
             var maxPointOfInterestId = CitiesDataStore.Current.Cities
                 .SelectMany(c => c.PointsOfInterest)
                 .Max(p => p.Id);
+            
+            var nextId = maxPointOfInterestId + 1; //er gaan mensen zijn (als ge 100 gebruikers hebt ofzo) die dit
+                                                   //tegelijk doen en dan kan er een duplicate id gebeuren
+            
+            //mappen:
+            var finalPointOfInterest = new PointOfInterestDto() //point of interest nodig voor intern datamodel!, daarom niet de for creation
+            {
+                Id = nextId, //wel een id, for creation heeft geen id, want dat wordt pas aangemaakt bij de creatie
+                Name = pointOfInterest.Name,
+                Description = pointOfInterest.Description
+            };
+
+            city.PointsOfInterest.Add(finalPointOfInterest);
+
+            //201 created
+            return CreatedAtAction(nameof(GetPointOfInterest), //action name
+                new 
+                { cityId = cityId, 
+                  pointOfInterestId = finalPointOfInterest.Id 
+                }, //route values
+                finalPointOfInterest //response body
+            );
         }
     }
 }
