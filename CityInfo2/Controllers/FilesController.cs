@@ -11,6 +11,10 @@ namespace CityInfo2.Controllers
     {
 
         [HttpGet("{fileName}")]
+        //async ga je enkel gebruiken bij IO (input output) operaties,
+        //zoals het lezen van een bestand of het ophalen van gegevens uit een database. => TRAAG, vandaar async
+        //Het gebruik van async zorgt ervoor dat de thread niet geblokkeerd wordt terwijl de IO-operatie wordt uitgevoerd, 
+        //waardoor de applicatie responsiever blijft.
         public async Task<ActionResult> GetFile(string fileName)
         {
             if(!System.IO.File.Exists(fileName))
