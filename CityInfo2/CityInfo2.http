@@ -11,7 +11,8 @@ Accept: application/json
 
 ### Get all cities (XML format)
 GET {{baseUrl}}/api/cities
-Accept: application/xml
+Accept: application/xml 
+#### kans is klein dat xml verwacht wordt, maar het kan zijn dat je dit ooit nodig hebt
 
 ### Get specific city
 GET {{baseUrl}}/api/cities/{{cityId}}
@@ -40,3 +41,11 @@ Accept: application/json
 ### Get point of interest that doesn't exist
 GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/999
 Accept: application/json
+
+###
+### File Endpoints
+###
+
+### Get a file
+GET {{baseUrl}}/api/files/file.pdf
+Accept: application/pdf

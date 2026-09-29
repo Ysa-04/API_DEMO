@@ -1,8 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
+//Accept xml and json formatters for the controllers:
+builder.Services.AddControllers()
+        .AddXmlDataContractSerializerFormatters();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
