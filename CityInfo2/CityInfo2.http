@@ -42,6 +42,15 @@ Accept: application/json
 GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/999
 Accept: application/json
 
+### Create a new point of interest
+POST {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest
+Content-Type: application/json
+
+{
+  "name": "New Attraction",
+  "description": "A wonderful new place to visit"
+}
+
 ###
 ### File Endpoints
 ###

@@ -43,5 +43,11 @@ namespace CityInfo2.Controllers
             }
             return Ok(pointOfInterestId);
         }
+
+        [HttpPost]
+        public ActionResult<PointOfInterestForCreationDto> CreatePointOfInterest(int cityId, PointOfInterestForCreationDto pointOfInterest)
+        {
+
+        }
     }
 }
