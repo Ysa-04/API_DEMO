@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Accept xml and json formatters for the controllers:
 builder.Services.AddControllers()
         .AddXmlDataContractSerializerFormatters();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
