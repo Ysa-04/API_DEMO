@@ -1,4 +1,5 @@
 ﻿using CityInfo2.Models;
+using CityInfo2.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
@@ -7,13 +8,25 @@ namespace CityInfo2.Controllers
 {
     [Route("api/cities/{cityId}/pointsofinterest")]
     [ApiController]
-    public class PointsOfInterestController : ControllerBase
+    public class PointsOfInterestController(
+        ILogger<PointsOfInterestController> logger,
+        IMailService mailService,
+        CitiesDataStore citiesDataStore) : ControllerBase //labo 6: logger
+                                                                     //dependency van ilogger wordt al geregistreerd bij opstarten
+                                                                     //(bv waar uw webserver draait), dus je hoeft dat niet zelf te doen,
+                                                                     //je kunt het gewoon injecteren in de constructor van de controller
     {
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDto>>
             GetPointsOfInterest(int cityId)
         {
-            var city = CitiesDataStore.Current.Cities
+            // HttpContext.RequestServices.GetService<ILogger<PointsOfInterestController>>().LogInformation($"Getting points of interest for city with id {cityId}");
+            //probleem dependencies ophalen in methode, waarom slecht idee?
+            // -> je moet de logger in de constructor injecteren, want anders moet je elke keer dat je een methode aanroept de
+            //    logger ophalen uit de service container, wat inefficiënt is en de code moeilijker te testen maakt.
+            //    je kan niet weten welke dependency je moet gebruiken. Da kan zijn da deze klasse extern gebruikt
+            //    wordt en dan kunnen andere gebruikers misschien niet aan die sourcecodes van die dependencies. = zelfde als property-injection -> nieeeet doen dus
+            var city = citiesDataStore.Cities
                 .FirstOrDefault(c => c.Id == cityId);
             if (city is null)
             {
@@ -27,11 +40,20 @@ namespace CityInfo2.Controllers
         public ActionResult<PointOfInterestDto> 
             GetPointOfInterest(int cityId, int pointOfInterestId)
         {
-            var city = CitiesDataStore.Current.Cities
+            var city = citiesDataStore.Cities
                 .FirstOrDefault(c => c.Id == cityId);
 
             if (city is null)
             {
+                logger.LogInformation($"City with id {cityId} not found when accessing point of interest with id {pointOfInterestId}");
+                //logging = als je applicatie uitvoert, dan kan je in de logs zien wat er gebeurt, bv als er een fout optreedt,
+                //dan kan je dat loggen zodat je later kan zien wat er mis is gegaan
+                //LogTrace = als je echt alles wilt loggen, bv elke keer dat een methode wordt aangeroepen,
+                //dan kan je dat loggen met LogTrace (allerlaagste niveau)
+                //LogInformation = als je belangrijke informatie wilt loggen,dan kan je dat loggen met LogInformation:
+                //webserver is aan het runnen op deze url
+                //DebugLog = tussen trace en information. 
+                //Warnings = kritischer, er klopt hier iets nie. (maximum information)
                 return NotFound();
             }
 
@@ -49,7 +71,7 @@ namespace CityInfo2.Controllers
         public ActionResult<PointOfInterestDto> CreatePointOfInterest(int cityId, 
             PointOfInterestForCreationDto pointOfInterest)
         {
-            var city = CitiesDataStore.Current.Cities
+            var city = citiesDataStore.Cities
                 .FirstOrDefault(c => c.Id == cityId);
 
             if(city is null)
@@ -58,7 +80,7 @@ namespace CityInfo2.Controllers
             }
 
             //id creeeren want geen database dus geen auto increment (womp womp) !niet safe dus!
-            var maxPointOfInterestId = CitiesDataStore.Current.Cities
+            var maxPointOfInterestId = citiesDataStore.Cities
                 .SelectMany(c => c.PointsOfInterest)
                 .Max(p => p.Id);
             
@@ -90,7 +112,7 @@ namespace CityInfo2.Controllers
         public ActionResult DeletePointOfInterest(int cityId,
             int pointOfInterestId)
         {
-            var city = CitiesDataStore.Current.Cities
+            var city = citiesDataStore.Cities
                 .FirstOrDefault(c => c.Id == cityId);
             if (city is null)
             {
@@ -103,6 +125,10 @@ namespace CityInfo2.Controllers
                 return NotFound();
             }
             city.PointsOfInterest.Remove(pointOfInterestFromStore);
+
+            mailService.SendMail("Point of interest deleted.",
+                $"Point of interest {pointOfInterestFromStore.Name} with id {pointOfInterestFromStore.Id} was deleted.");
+
             return NoContent(); //204
 
             /* je wilt gewoon checken of alles wel bestaat da je wilt deleten 
@@ -115,7 +141,7 @@ namespace CityInfo2.Controllers
         int pointOfInterestId,
         PointOfInterestForUpdateDto pointOfInterest) //content of request body (json) word automatisch gemapped naar dit dto object
         {
-            var city = CitiesDataStore.Current.Cities
+            var city = citiesDataStore.Cities
                 .FirstOrDefault(c => c.Id == cityId);
             if (city is null)
             {
@@ -141,7 +167,7 @@ namespace CityInfo2.Controllers
         JsonPatchDocument<PointOfInterestForUpdateDto> patchDocument)
         {
             // check if city exists
-            var city = CitiesDataStore.Current.Cities
+            var city = citiesDataStore.Cities
                 .FirstOrDefault(c => c.Id == cityId);
             if (city is null)
             {

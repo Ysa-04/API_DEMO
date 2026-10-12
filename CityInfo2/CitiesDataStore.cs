@@ -4,7 +4,10 @@ namespace CityInfo2
 {
     public class CitiesDataStore
     {
-        public static CitiesDataStore Current { get; } = new(); //Static property waarmee je altijd dezelfde instantie van de class kunt gebruiken.
+        //in ons programma gebruiken we een static property om aan uw data te komen, we gaan da in labo 7 fixen door db te linken
+        // ge hebt ook een tight coulping tussen citiesdatastore en uwe controller nu
+        // wa gaan die static nu weghalen
+        //public static CitiesDataStore Current { get; } = new(); //Static property waarmee je altijd dezelfde instantie van de class kunt gebruiken.
         public List<CityDto> Cities { get; set; }
         public CitiesDataStore()
         {

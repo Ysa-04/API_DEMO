@@ -106,7 +106,7 @@ POST {{baseUrl}}/api/files
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="sample-file.pdf"
+Content-Disposition: form-data; name="file"; filename="file.pdf"
 Content-Type: application/pdf
 
 < ./sample-file.pdf
