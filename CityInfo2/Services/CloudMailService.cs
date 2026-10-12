@@ -1,10 +1,10 @@
 ﻿namespace CityInfo2.Services
 {
-    public class CloudMailService: IMailService
+    public class CloudMailService(IConfiguration configuration) : IMailService
     {
-       
-        private string _MailTo = "admin@mycompany.com";
-        private string _MailForm = "noreply@mycompany.com";
+       //moet lezen uit developmentfile 
+        private string _MailTo = configuration["mailSettings:mailToAddress"]; 
+        private string _MailForm = configuration["mailSettings:mailFromAddress"];
 
         public void SendMail(string subject, string message)
         {
